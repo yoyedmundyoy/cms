@@ -10,33 +10,58 @@ class CASController extends Controller
 {
 
     private $casUrl = 'https://cas.apiit.edu.my';
+    private $casTGT = '';
     private $casST = '';
-    private $casData;
 
     private function getHttp(): Client {
         return new Client();
     }
 
-   public function getStudentProfile(Request $request) {
+    public function getTGT(string $username, string $password) { // TGT will be valid for 30 days
         try {
-            $baseUrl = \Illuminate\Support\Facades\Request::root();
-            if (!$request->get('ticket')) return redirect($this->casUrl . "/cas/login?service=$baseUrl/api/cas/auth");
-            $this->casST = $request->get('ticket');
-
-            $response = $this->getHttp()->request('GET', $this->casUrl . "/cas/p3/serviceValidate?service=$baseUrl/api/cas/auth&ticket={$this->casST}&format=json", [
+            $response = $this->getHttp()->request('POST', $this->casUrl . '/cas/v1/tickets', [
                 'headers' => [
-                    'Content-type' => 'application/x-www-form-urlencoded'
-                ]
+                    'Content-type' => 'Application/x-www-form-urlencoded'
+                ],
+                'form_params' => [
+                    'username' => strtoupper($username),
+                    'password' => $password
+                ],
+                'verify' => false
             ]);
-
-            $this->casData = json_decode($response->getBody()->getContents());
-
-            return redirect(route('member.dashboard'))->with([
-                'ticket' => $this->casST,
-                'data' => $this->casData->serviceResponse->authenticationSuccess
-            ]);
+            return $this->casTGT = str_replace('https://cas.apiit.edu.my/cas/v1/tickets/', '', $response->getHeader('Location')[0]);
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'CAS Authentication Failed']);
+            return response()->json(['message' => 'An error has occurred while we acquire your TGT from CAS']);
+        }
+    }
+
+    public function getST() { // ST will be valid for 20 seconds
+        try {
+            $response = $this->getHttp()->request('POST', $this->casUrl . "/cas/v1/tickets/{$this->casTGT}", [
+                'form_params' => [
+                    'service' => 'https://api.apiit.edu.my/student/profile'
+                ],
+                'verify' => false
+            ]);
+            return $this->casST = $response->getBody()->getContents();
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'An error has occurred while we acquire your ST from CAS']);
+        }
+    }
+
+   public function getStudentProfile($username = null, $password = null) {
+        if (!$username || !$password) return response()->json(['message' => 'Parameters not satisfied.']);
+        $this->getTGT($username, $password);
+        $this->getST();
+
+       try {
+            $response = $this->getHttp()->request('GET', "https://api.apiit.edu.my/student/profile?ticket={$this->casST}", [
+                'verify' => false
+            ]);
+
+            return $response->getBody()->getContents();
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'An error has occurred while we acquire your Student Profile. Please check your credentials.']);
         }
    }
 }

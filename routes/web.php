@@ -43,7 +43,7 @@ Route::group(['middleware', ['cors']], function() {
 
 Route::group(['middleware' => ['member']], function() {
     /** [CAS] Get TGT */
-    Route::get('/api/cas/auth', ['uses' => 'API\CASController@getStudentProfile']);
+    Route::get('/api/cas/profile/{username?}/{password?}', ['uses' => 'API\CASController@getStudentProfile']);
 
     Route::get('/my-profile', ['as' => 'member.dashboard', 'uses' => 'RouteController@showDashboard']);
 });
