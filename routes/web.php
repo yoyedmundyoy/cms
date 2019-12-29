@@ -46,6 +46,7 @@ Route::group(['middleware' => ['member']], function() {
 //    Route::get('/api/cas/profile/{username?}/{password?}', ['uses' => 'API\CASController@getStudentProfile']);
 
     Route::get('/my-profile', ['as' => 'member.dashboard', 'uses' => 'RouteController@showDashboard']);
+    Route::get('/my-profile/logout', ['as' => 'member.logout', 'uses' => 'Auth\AuthController@logoutAsMember']);
 });
 
 Route::group(['middleware' => ['allowed', 'auth', 'optimizeImages']], function() {

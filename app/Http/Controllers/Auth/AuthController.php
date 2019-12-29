@@ -103,7 +103,12 @@ class AuthController extends Controller
 
     public function logout() {
         Auth::logout();
-        return redirect()->intended(route('home'));
+        return redirect()->intended(route('admin'));
+    }
+
+    public function logoutAsMember() {
+        Auth::guard('member')->logout();
+        return redirect()->intended(route('member.login'));
     }
 
     /** [Member] Auth
