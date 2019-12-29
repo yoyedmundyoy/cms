@@ -35,6 +35,10 @@ Route::get('/member', ['as' => 'member.login', 'uses' => 'RouteController@showLo
 Route::post('/member', ['as' => 'member.login.post', 'uses' => 'Auth\AuthController@loginAsMember']);
 /** End [Member] Login */
 
+/** [Member] Account Activation */
+Route::get('/api/activate/account/{email}/{secret}', ['as' => 'member.activate', 'uses' => 'Member\MemberController@activateAccount']);
+/** End [Member] Account Activation */
+
 /** Member [Verification] */
 Route::group(['middleware', ['cors']], function() {
     Route::get('/api/member/email/{email}', ['as' => 'member.verification', 'uses' => 'API\APIController@verify']);

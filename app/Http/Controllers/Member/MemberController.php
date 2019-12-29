@@ -162,4 +162,11 @@ class MemberController extends Controller
 
         return Response::stream($callback, 200, $headers);
     }
+
+    public function activateAccount(string $email, string $secret) {
+        return response()->json([
+           'email' => $email,
+           'secret' => $secret
+        ]);
+    }
 }
