@@ -20,4 +20,15 @@
             </div>
         </div>
     </div>
+
+    <hr />
+
+    <h3>Events attended (Breakdown)</h3>
+    @if (count(auth()->guard('member')->user()->events) > 0)
+        @foreach (auth()->guard('member')->user()->events as $event)
+            - {{ $event->meetup_title }}
+        @endforeach
+    @else
+        <h4>- No Events</h4>
+    @endif
 @stop
