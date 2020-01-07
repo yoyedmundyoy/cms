@@ -126,7 +126,7 @@
               <div class="material-check col right">
                 <input class="form-check-input" type="checkbox" value="web dev" id="web dev" name="skills[]">
                 <label class="form-check-label" for="web dev">
-                  Web Dev
+                  Web
                 </label>
               </div>
 
@@ -142,7 +142,7 @@
               <div class="material-check col right">
                 <input class="form-check-input" type="checkbox" value="android" id="android" name="skills[]">
                 <label class="form-check-label" for="android">
-                  Android
+                  Mobile
                 </label>
               </div>
 
@@ -171,9 +171,10 @@
                 </label>
               </div>
 
-              <div class="material-check col right invisible">
-                <input class="form-check-input">
-                <label class="form-check-label">
+              <div class="material-check col right">
+                <input class="form-check-input" type="checkbox" value="data science" id="data science" name="skills[]">
+                <label class="form-check-label" for="data science">
+                  Data Science
                 </label>
               </div>
 
